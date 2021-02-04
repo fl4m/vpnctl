@@ -3,12 +3,12 @@ name: Python Lint & Test
 on: [push]
 
 jobs:
-  main:
+  build-lint-test:
 
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.9]
+        python-version: [3.8, 3.9]
 
     steps:
       - name: Checkout code
@@ -26,7 +26,7 @@ jobs:
           PATH=~/.local/bin:$PATH
       - name: Setup dependencies
         run: |
-          poetry install -vv --no-ansi --no-interaction
+          poetry install -vv --no-interaction
       - name: Lint with black
         run: |
           poetry run black . --check --diff
@@ -36,7 +36,26 @@ jobs:
       - name: Uplaod test results
         uses: actions/upload-artifact@v2
         with:
-          name: pytest-results-${{ matrix.python-version }}
+          name: pytest-results
           path: junit/test-results-${{ matrix.python-version }}.xml
         # Use always() to always run this step to publish test results when there are test failures
         if: ${{ always() }}
+
+
+  publish-test-results:
+    name: Publish Test Results
+    needs: build-lint-test
+    runs-on: ubuntu-latest
+    if: success() || failure()
+
+    steps:
+      - name: Download Artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: pytest-results
+      - name: Publish Unit Test Results
+        uses: EnricoMi/publish-unit-test-result-action@v1.6
+        with:
+          check_name: Unit Test Results
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          files: test-results-*.xml
