@@ -4,6 +4,16 @@ version = "0.0.1"
 description = "A simple command line interface for managing and controlling VPN connections."
 authors = ["Robert Mörseburg <fl4m@users.noreply.github.com>"]
 license = "MIT"
+readme = "README.md"
+repository = "https://github.com/fl4m/vpnctl"
+keywords = ["vpn", "vpnctl", "openvpn"]
+classifiers = [
+    "Development Status :: 1 - Planning",
+    "Environment :: Console",
+    "Operating System :: Unix",
+    "Topic :: System :: Networking",
+    "Topic :: Utilities"
+]
 
 [tool.poetry.dependencies]
 python = "^3.9"
