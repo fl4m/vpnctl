@@ -8,7 +8,7 @@ def test_version():
     """Should print the version information."""
 
     runner = CliRunner()
-    result = runner.invoke(commands.cli, ['--version'])
+    result = runner.invoke(commands.cli, ["--version"])
 
     assert result.exit_code == 0
     assert __version__ in result.output

@@ -16,6 +16,7 @@ def list_cfgs():
 
     try:
         from .ovpn import OpenVPNManager
+
         m = OpenVPNManager()
         for c_name in m.list_configurations():
             click.echo(c_name)
