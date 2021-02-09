@@ -21,4 +21,4 @@ def list_cfgs():
         for c_name in m.list_configurations():
             click.echo(c_name)
     except ModuleNotFoundError:
-        click.echo("The OpenVPN backend was not found.")
+        raise click.ClickException("The OpenVPN backend was not found.")
