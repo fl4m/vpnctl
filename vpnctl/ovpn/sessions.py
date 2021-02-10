@@ -1,6 +1,7 @@
 import openvpn3
 
-from .. import Status, OVPN_BUS
+from .. import Status
+from . import OVPN_BUS
 
 
 class Session:

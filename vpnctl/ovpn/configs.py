@@ -1,5 +1,5 @@
 import openvpn3
-from .. import OVPN_BUS
+from . import OVPN_BUS
 
 
 class ConfigManager:
