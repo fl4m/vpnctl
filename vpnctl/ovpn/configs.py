@@ -1,19 +1,15 @@
-import dbus
 import openvpn3
+from .. import OVPN_BUS
 
 
-class OpenVPNManager:
+class ConfigManager:
     def __init__(self):
-        self.config_mgr = openvpn3.ConfigurationManager(dbus.SystemBus())
+        self.config_mgr = openvpn3.ConfigurationManager(OVPN_BUS)
 
     def list_configurations(self):
         cfgs = self.config_mgr.FetchAvailableConfigs()
         return [str(c.GetProperty("name")) for c in cfgs]
 
-
-def list_configuration_properties(config):
-    config = dbus.SystemBus().get_object(
-        "net.openvpn.v3.configuration", config.GetPath()
-    )
-    prop_intf = dbus.Interface(config, dbus_interface="org.freedesktop.DBus.Properties")
-    return prop_intf.GetAll("net.openvpn.v3.configuration")
+    def get_config(self, path):
+        """Get a configuration via its dbus object path."""
+        self.config_mgr.Retrieve(path)
