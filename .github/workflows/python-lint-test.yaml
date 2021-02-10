@@ -22,7 +22,13 @@ jobs:
       # This is required for now since OpenVPN is the only available backend.
       # Maybe we create separate integration tests later.
       - name: Install OpenVPN
-        run: sudo apt install -y openvpn3
+        run: |
+          sudo apt install apt-transport-https
+          wget https://swupdate.openvpn.net/repos/openvpn-repo-pkg-key.pub
+          sudo apt-key add openvpn-repo-pkg-key.pub
+          sudo wget -O /etc/apt/sources.list.d/openvpn3.list https://swupdate.openvpn.net/community/openvpn3/repos/openvpn3-$DISTRO.list
+          sudo apt uupdate
+          sudo apt install openvpn3
       - name: Setup poetry
         run: |
           python -m pip install --upgrade pip
