@@ -75,6 +75,14 @@ optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
 
 [[package]]
+name = "dbus-python"
+version = "1.2.16"
+description = "Python bindings for libdbus"
+category = "main"
+optional = false
+python-versions = "*"
+
+[[package]]
 name = "distlib"
 version = "0.3.1"
 description = "Distribution utilities"
@@ -277,7 +285,7 @@ testing = ["coverage (>=4)", "coverage-enable-subprocess (>=1)", "flaky (>=3)", 
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "fd236e3159ab76e444caa22836837591759047aa143b74549179f5a039c2696f"
+content-hash = "30b993beab88fa57c2edffc73c47463c437dcedd1768e6a0339026774de84bbc"
 
 [metadata.files]
 appdirs = [
@@ -306,6 +314,9 @@ click = [
 colorama = [
     {file = "colorama-0.4.4-py2.py3-none-any.whl", hash = "sha256:9f47eda37229f68eee03b24b9748937c7dc3868f906e8ba69fbcbdd3bc5dc3e2"},
     {file = "colorama-0.4.4.tar.gz", hash = "sha256:5941b2b48a20143d2267e95b1c2a7603ce057ee39fd88e7329b0c292aa16869b"},
+]
+dbus-python = [
+    {file = "dbus-python-1.2.16.tar.gz", hash = "sha256:11238f1d86c995d8aed2e22f04a1e3779f0d70e587caffeab4857f3c662ed5a4"},
 ]
 distlib = [
     {file = "distlib-0.3.1-py2.py3-none-any.whl", hash = "sha256:8c09de2c67b3e7deef7184574fc060ab8a793e7adbb183d942c389c8b13c52fb"},

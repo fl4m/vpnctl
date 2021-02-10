@@ -1,4 +1,4 @@
-import openvpn3
+from .vendor import openvpn3
 
 from .. import Status
 from . import OVPN_BUS

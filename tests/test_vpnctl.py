@@ -1,3 +1,4 @@
+import pytest
 from click.testing import CliRunner
 
 from vpnctl import commands
@@ -10,12 +11,14 @@ def test_version():
     runner = CliRunner()
     result = runner.invoke(commands.cli, ["--version"])
 
-    assert result.exit_code == 0
     assert __version__ in result.output
 
 
-def test_status():
+@pytest.mark.parametrize(
+    "cli", [("--version"), ("--help"), ("status"), ("list")]
+)
+def test_command_exit_success(cli):
     runner = CliRunner()
-    result = runner.invoke(commands.cli, ["status"])
+    result = runner.invoke(commands.cli, cli)
 
     assert result.exit_code == 0

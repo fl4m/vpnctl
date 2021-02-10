@@ -1,6 +1,9 @@
 [tool.poetry]
 name = "vpnctl"
 version = "0.0.1"
+packages = [
+    { include = "vpnctl" },
+]
 description = "A simple command line interface for managing and controlling VPN connections."
 authors = ["Robert Mörseburg <fl4m@users.noreply.github.com>"]
 license = "MIT"
@@ -18,6 +21,7 @@ classifiers = [
 [tool.poetry.dependencies]
 python = "^3.8"
 click = "^7.1.2"
+dbus-python = "^1.2.16"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2"
@@ -30,3 +34,23 @@ vpnctl = "vpnctl.commands:cli"
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 80
+exclude = '''
+(
+  /(
+      \.eggs         # exclude a few common directories in the
+    | \.git          # root of the project
+    | \.hg
+    | \.mypy_cache
+    | \.tox
+    | \.venv
+    | _build
+    | buck-out
+    | build
+    | dist
+  )/
+  | /vpnctl/ovpn/vendor/
+)
+'''

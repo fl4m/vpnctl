@@ -1,5 +1,5 @@
 import dbus
-from .. import OVPN_BUS
+from . import OVPN_BUS
 
 
 def get_all_properties(interface, path):
