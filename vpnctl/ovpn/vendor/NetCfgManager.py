@@ -27,7 +27,7 @@ import dbus
 import time
 from functools import wraps
 
-from openvpn3 import NetCfgChangeType
+from . import NetCfgChangeType
 
 class NetworkChangeSignal(object):
     def __init__(self, type, device, details):

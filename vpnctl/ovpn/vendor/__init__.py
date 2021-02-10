@@ -27,7 +27,7 @@ __all__ = ['StatusMajor', 'StatusMinor',
            'ClientAttentionType', 'ClientAttentionGroup',
            'NetCfgChangeType',
            'ConfigParser',
-           'PrintSessionStatistics']
+           ]
 
 # Make all defined constants and classes part if this main module
 from .constants import *

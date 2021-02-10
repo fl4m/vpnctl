@@ -27,8 +27,8 @@
 import dbus
 import time
 from functools import wraps
-from openvpn3.constants import StatusMajor, StatusMinor
-from openvpn3.constants import ClientAttentionType, ClientAttentionGroup
+from .constants import StatusMajor, StatusMinor
+from .constants import ClientAttentionType, ClientAttentionGroup
 
 ##
 #  The UserInputSlot object represents a single request for user input
