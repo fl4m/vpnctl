@@ -31,8 +31,8 @@ def list_cfgs():
     from .ovpn import ConfigManager
 
     m = ConfigManager()
-    for c_name in m.list_configurations():
-        click.echo(c_name)
+    for c in m.get_all():
+        click.echo(c.name)
 
 
 @cli.command()
@@ -40,10 +40,16 @@ def list_cfgs():
 def status():
     """Get the current VPN status."""
 
-    from .ovpn import SessionManager
+    from .ovpn import ConfigManager, SessionManager
 
-    m = SessionManager()
-    for s in m.list_sessions():
-        click.echo(s.get_status())
-    else:
+    sm = SessionManager()
+    cm = ConfigManager()
+    sessions = sm.get_all()
+    for s in sessions:
+        c = cm.get(s.configuration_path)
+        if c is not None:
+            click.echo(f"{c.name}: {s.status}\n")
+        else:
+            click.echo(f"{s.name}: {s.status} (temporary configuration)\n")
+    if len(sessions) == 0:
         click.echo(Status.DISCONNECTED)

@@ -1,18 +1,23 @@
+from .configs import ConfigManager, Configuration
+from .wrapper import DBusWrapper, OvpnManager
 from .vendor import openvpn3
 
 from .. import Status
 from . import OVPN_BUS
 
 
-class Session:
-    """Wraps a OpenVPN session."""
+class Session(DBusWrapper):
+    """Wraps an OpenVPN session."""
 
-    def __init__(self, ovpn_session: openvpn3.Session):
-        self.ovpn_session = ovpn_session
+    _interface_name = "net.openvpn.v3.sessions"
 
-    def get_status(self) -> Status:
+    # Properties
+    @property
+    def status(self) -> Status:
+        """Connection status of this Session."""
+
         # retrieve status object
-        s = self.ovpn_session.GetStatus()
+        s = self._wrapped.GetStatus()
 
         # handle other cases
         if s["major"] != openvpn3.StatusMajor.CONNECTION:
@@ -27,17 +32,17 @@ class Session:
         # return with default
         return status_map.get(s["minor"], Status.DISCONNECTED)
 
-    def get_path(self):
-        return self.ovpn_session.GetPath()
+    @property
+    def configuration_path(self):
+        """"DBus path of the Configuration associated with this session."""
+        return self._get_property("config_path")
 
-    def get_config_path(self):
-        return self.ovpn_session.GetProperty("config_path")
+    @property
+    def name(self):
+        """Name of this Session as defined by OpenVPN."""
+        return self._get_property("session_name")
 
 
-class SessionManager:
-    def __init__(self):
-        self.session_mgr = openvpn3.SessionManager(OVPN_BUS)
-
-    def list_sessions(self):
-        sessions = self.session_mgr.FetchAvailableSessions()
-        return [Session(s) for s in sessions]
+class SessionManager(OvpnManager[Session]):
+    _obj_cls = Session
+    _mgr_instance = openvpn3.SessionManager(OVPN_BUS)
