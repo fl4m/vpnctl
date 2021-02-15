@@ -5,7 +5,7 @@ from vpnctl.ovpn.wrapper import DBusWrapper
 
 class TestWrapper(DBusWrapper):
     _interface_name = "org.freedesktop.DBus"
-    _bus = dbus.SessionBus()
+    _bus = dbus.SystemBus()
 
     def __init__(self, path):
         dbo = self._bus.get_object(self._interface_name, path)
