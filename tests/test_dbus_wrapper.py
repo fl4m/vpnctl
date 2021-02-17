@@ -7,9 +7,15 @@ class TestWrapper(DBusWrapper):
     _interface_name = "org.freedesktop.DBus"
     _bus = dbus.SystemBus()
 
+    class MockObject:
+        def __init__(self, path):
+            self._path = path
+
+        def GetPath(self):
+            return self._path
+
     def __init__(self, path):
-        dbo = self._bus.get_object(self._interface_name, path)
-        super().__init__(dbo)
+        super().__init__(self.MockObject(path))
 
 
 existing_path = "/org/freedesktop/DBus"
@@ -33,3 +39,8 @@ def test_list_properties():
 
     assert len(result) == len(expected)
     assert all([a == b for a, b in zip(result, expected)])
+
+
+def test_get_id():
+    w = TestWrapper(existing_path)
+    assert w.id == "DBus"

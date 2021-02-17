@@ -59,8 +59,8 @@ class Session(DBusWrapper):
 
 
 class SessionManager(OvpnManager[Session]):
-    _obj_cls = Session
-    _mgr_instance = openvpn3.SessionManager(OVPN_BUS)
+    def __init__(self):
+        super().__init__(Session, openvpn3.SessionManager(OVPN_BUS))
 
     def clearer(self):
         """Clear unused session via a generator.

@@ -18,7 +18,7 @@ class MockConfigObject:
         return None
 
 
-class MockManager:
+class MockManagerObject:
     def __init__(self, names):
         self._names = names
 
@@ -37,15 +37,20 @@ class MockConfig(Configuration):
         return ["name"]
 
 
+class MockManager(ConfigManager):
+    def __init__(self, mgr):
+        super().__init__()
+        self._obj_cls = MockConfig
+        self.mgr_instance = mgr
+
+
 def test_get_by_name():
     expected_name = "test-name"
     expected_path = "test/path/1"
 
-    mock = MockManager([(expected_name, expected_path)])
-    ConfigManager._mgr_instance = mock
-    ConfigManager._obj_cls = MockConfig
+    mock = MockManagerObject([(expected_name, expected_path)])
 
-    cm = ConfigManager()
+    cm = MockManager(mock)
     c = cm.get_by_name(expected_name)
 
     assert c.exists()
@@ -54,10 +59,7 @@ def test_get_by_name():
 
 
 def test_get_by_name_none():
-    ConfigManager._mgr_instance = MockManager([])
-    ConfigManager._obj_cls = MockConfig
-
-    cm = ConfigManager()
+    cm = MockManager(MockManagerObject([]))
     c = cm.get_by_name("wont-work")
 
     assert c is None
@@ -66,14 +68,14 @@ def test_get_by_name_none():
 def test_get_by_name_error():
     expected_name = "test-name"
     expected_path = "/test/path/%d"
-    ConfigManager._mgr_instance = MockManager(
-        [
-            (expected_name, expected_path % 1),
-            (expected_name, expected_path % 2),
-        ]
+    cm = MockManager(
+        MockManagerObject(
+            [
+                (expected_name, expected_path % 1),
+                (expected_name, expected_path % 2),
+            ]
+        )
     )
-    ConfigManager._obj_cls = MockConfig
-    cm = ConfigManager()
 
     with pytest.raises(ValueError, match="multiple"):
         cm.get_by_name(expected_name)

@@ -1,4 +1,3 @@
-import functools
 import typing
 
 import dbus
@@ -17,12 +16,7 @@ class DBusWrapper:
     @property
     def _dbus_path(self) -> dbus.ObjectPath:
         """Returns the dbus path of the wrapped object."""
-        try:
-            # For OpenVPN objects
-            return self._wrapped.GetPath()
-        except (AttributeError, dbus.DBusException):
-            # For plain dbus objects
-            return self._wrapped.object_path
+        return self.wrapped.GetPath()
 
     @property
     def _dbus_object(self):
@@ -66,7 +60,7 @@ class DBusWrapper:
         return props.GetAll(self._interface_name)
 
     def _get_property(self, name: str):
-        return self._wrapped.GetProperty(name)
+        return self.wrapped.GetProperty(name)
 
 
 ObjType = typing.TypeVar("ObjType", bound=DBusWrapper)
@@ -75,16 +69,21 @@ ObjType = typing.TypeVar("ObjType", bound=DBusWrapper)
 class OvpnManager(typing.Generic[ObjType]):
     """Base class for managing OpenVPN objects."""
 
-    _mgr_instance = None
-    _obj_cls: typing.Type[DBusWrapper] = None
+    def __init__(self, obj_cls: typing.Type[DBusWrapper], manager):
+        """Create a new manager.
+
+        :param manager: the wrapped manager instance
+        :param obj_cls: the class of the managed objects"""
+        self.mgr_instance = manager
+        self._obj_cls = obj_cls
 
     def get_all(self) -> typing.List[ObjType]:
         return [self._obj_cls(obj) for obj in self._mgr_fetch_all()]
 
     def _mgr_fetch_all(self):
         methods = [
-            getattr(self._mgr_instance, a)
-            for a in dir(self._mgr_instance)
+            getattr(self.mgr_instance, a)
+            for a in dir(self.mgr_instance)
             if a.startswith("FetchAvailable")
         ]
 
@@ -94,13 +93,13 @@ class OvpnManager(typing.Generic[ObjType]):
             )
         return methods[0]()
 
-    def get(self, path) -> ObjType:
+    def get(self, path) -> typing.Optional[ObjType]:
         """Create an instance of the class from its DBus path.
 
         Returns None if there is no object at this path."""
 
         # Retrieve the object at path
-        dbo = self._mgr_instance.Retrieve(path)
+        dbo = self.mgr_instance.Retrieve(path)
         # Create wrapped instance
         obj = self._obj_cls(dbo)
 

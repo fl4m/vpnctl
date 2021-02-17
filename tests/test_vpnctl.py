@@ -19,6 +19,6 @@ def test_version():
 )
 def test_command_exit_success(cli):
     runner = CliRunner()
-    result = runner.invoke(commands.cli, cli)
+    result = runner.invoke(commands.cli, [cli])
 
     assert result.exit_code == 0

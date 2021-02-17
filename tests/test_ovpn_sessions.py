@@ -1,4 +1,10 @@
+from datetime import datetime
+
+from vpnctl import Status
 from vpnctl.ovpn.sessions import Session, SessionManager
+
+
+TIMESTAMP = datetime.now()
 
 
 class MockSession:
@@ -6,6 +12,7 @@ class MockSession:
         "session_name": "test-session",
         "config_name": "test-config",
         "config_path": "/net/mockmock/configs/1337",
+        "session_created": int(TIMESTAMP.timestamp()),
     }
 
     def GetProperty(self, k):
@@ -21,28 +28,18 @@ class MockSession:
         }
 
 
-def test_sm_get_session():
+def test_get_properties():
+    ovpn_s = MockSession()
+    s = Session(ovpn_s)
+
+    assert s.name == "test-session"
+    assert s.configuration_path == "/net/mockmock/configs/1337"
+    assert s.status == Status.CONNECTED
+    assert s.created == TIMESTAMP.replace(microsecond=0)
+
+
+def test_sm_get_session_not_found():
     sm = SessionManager()
     notFound = "/this/wont/work"
     s = sm.get(notFound)
     assert s is None
-
-
-def test_get_name():
-    ovpn_s = MockSession()
-    s = Session(ovpn_s)
-    assert s.name == "test-session"
-
-
-def test_get_config():
-    ovpn_s = MockSession()
-    s = Session(ovpn_s)
-    assert s.configuration_path == "/net/mockmock/configs/1337"
-
-
-def test_get_status():
-    ovpn_s = MockSession()
-    s = Session(ovpn_s)
-    from vpnctl import Status
-
-    assert s.status == Status.CONNECTED

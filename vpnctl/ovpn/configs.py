@@ -17,14 +17,14 @@ class Configuration(DBusWrapper):
 class ConfigManager(OvpnManager[Configuration]):
     """Contains all methods to create and retrieve OpenVPN configurations."""
 
-    _obj_cls = Configuration
-    _mgr_instance = openvpn3.ConfigurationManager(OVPN_BUS)
+    def __init__(self):
+        super().__init__(Configuration, openvpn3.ConfigurationManager(OVPN_BUS))
 
     def get_by_name(self, name):
         """Lookup a persistent configuration by its name."""
 
         # returns a list of matching DBus paths
-        cfgs = self._mgr_instance.LookupConfigName(name)
+        cfgs = self.mgr_instance.LookupConfigName(name)
 
         if len(cfgs) > 1:
             raise ValueError("There were multiple configurations found.")
