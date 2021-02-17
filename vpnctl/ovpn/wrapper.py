@@ -29,6 +29,18 @@ class DBusWrapper:
         """Return the dbus object for the wrapped object."""
         return self._bus.get_object(self._interface_name, self._dbus_path)
 
+    @property
+    def wrapped(self):
+        """Return the wrapped object."""
+        return self._wrapped
+
+    @property
+    def id(self):
+        """Return the UID given to the wrapped object by OpenVPN."""
+        from os.path import basename
+
+        return basename(self._dbus_path)
+
     def _ping(self):
         """Uses a standard method to check if the specified object exists.
 

@@ -1,7 +1,9 @@
 from functools import wraps
 
 import click
-from . import __version__, Status
+from tabulate import tabulate
+
+from . import Status, __version__
 
 
 @click.version_option(__version__)
@@ -35,9 +37,10 @@ def list_cfgs():
         click.echo(c.name)
 
 
+@click.option("--verbose/--short", "-v/", default=False)
 @cli.command()
 @with_ovpn_import
-def status():
+def status(verbose):
     """Get the current VPN status."""
 
     from .ovpn import ConfigManager, SessionManager
@@ -45,11 +48,34 @@ def status():
     sm = SessionManager()
     cm = ConfigManager()
     sessions = sm.get_all()
+    lines = list()
+
     for s in sessions:
         c = cm.get(s.configuration_path)
+        line, n = None, ""
         if c is not None:
-            click.echo(f"{c.name}: {s.status}\n")
+            n = c.name
         else:
-            click.echo(f"{s.name}: {s.status} (temporary configuration)\n")
-    if len(sessions) == 0:
+            n = s.name + " (temporary connection)"
+        if s.status == Status.CONNECTED:
+            line = f"Connected to {n}."
+        if verbose:
+            color = "green" if s.status == Status.CONNECTED else "red"
+            line = [
+                s.id,
+                click.style(str(s.status), fg=color),
+                n,
+                s.created.ctime(),
+            ]
+
+        if line is not None:
+            lines.append(line)
+
+    if len(lines) > 0:
+        if verbose:
+            headers = ["ID", "Status", "Connection", "Created"]
+            click.echo(tabulate(lines, headers=headers))
+        else:
+            click.echo("\n".join(lines))
+    else:
         click.echo(Status.DISCONNECTED)

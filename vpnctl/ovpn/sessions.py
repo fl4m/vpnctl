@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from .configs import ConfigManager, Configuration
 from .wrapper import DBusWrapper, OvpnManager
 from .vendor import openvpn3
@@ -17,7 +19,7 @@ class Session(DBusWrapper):
         """Connection status of this Session."""
 
         # retrieve status object
-        s = self._wrapped.GetStatus()
+        s = self.wrapped.GetStatus()
 
         # handle other cases
         if s["major"] != openvpn3.StatusMajor.CONNECTION:
@@ -41,6 +43,19 @@ class Session(DBusWrapper):
     def name(self):
         """Name of this Session as defined by OpenVPN."""
         return self._get_property("session_name")
+
+    @property
+    def created(self):
+        """Date and Time when this session was created."""
+        return datetime.fromtimestamp(self._get_property("session_created"))
+
+    def connect(self):
+        """Initialize and start this session."""
+        pass
+
+    def disconnect(self):
+        """Stop and delete this session."""
+        self.wrapped.Disconnect()
 
 
 class SessionManager(OvpnManager[Session]):
