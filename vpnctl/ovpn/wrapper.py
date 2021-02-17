@@ -35,7 +35,7 @@ class DBusWrapper:
         return self._wrapped
 
     @property
-    def id(self):
+    def id(self) -> str:
         """Return the UID given to the wrapped object by OpenVPN."""
         from os.path import basename
 

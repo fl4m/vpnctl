@@ -61,3 +61,28 @@ class Session(DBusWrapper):
 class SessionManager(OvpnManager[Session]):
     _obj_cls = Session
     _mgr_instance = openvpn3.SessionManager(OVPN_BUS)
+
+    def clearer(self):
+        """Clear unused session via a generator.
+
+        :returns: a tuple consisting of the number of sessions to delete
+        and a generator which will delete the sessions one at a time to enable
+        some form of updates."""
+        to_delete = list()
+        for s in self.get_all():
+            if s.status == Status.DISCONNECTED:
+                to_delete.append(s)
+
+        def generator():
+            for s in to_delete:
+                id = s.id
+                s.disconnect()
+                yield id
+
+        return len(to_delete), generator()
+
+    def clear(self):
+        """Remove all unused (disconnected) sessions and return their names."""
+
+        _, gen = self.clearer()
+        return list(gen())

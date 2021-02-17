@@ -15,7 +15,7 @@ def test_version():
 
 
 @pytest.mark.parametrize(
-    "cli", [("--version"), ("--help"), ("status"), ("list")]
+    "cli", ["--version", "--help", "status", "list", "clear"]
 )
 def test_command_exit_success(cli):
     runner = CliRunner()

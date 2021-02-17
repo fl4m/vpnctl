@@ -79,3 +79,25 @@ def status(verbose):
             click.echo("\n".join(lines))
     else:
         click.echo(Status.DISCONNECTED)
+
+
+@cli.command()
+@with_ovpn_import
+def clear():
+    """Clear all Sessions that are currently not in use."""
+    from .ovpn import SessionManager
+
+    sm = SessionManager()
+    total, gen = sm.clearer()
+
+    for c in range(total):
+        click.echo(f"\033[?25lDeleting session {c+1}/{total}...\r", nl=False)
+        next(gen)
+
+    if total > 0:
+        # overwrite last line and end with newline
+        click.echo(
+            f"\033[?25hDeleted {total} sessions." + " " * (len(str(total)) + 3)
+        )
+    else:
+        click.echo("Nothing to delete.")
