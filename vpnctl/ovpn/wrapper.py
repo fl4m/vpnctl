@@ -1,6 +1,7 @@
 import typing
 
 import dbus
+
 from . import OVPN_BUS
 
 
@@ -66,7 +67,7 @@ class DBusWrapper:
 ObjType = typing.TypeVar("ObjType", bound=DBusWrapper)
 
 
-class OvpnManager(typing.Generic[ObjType]):
+class BaseManager(typing.Generic[ObjType]):
     """Base class for managing OpenVPN objects."""
 
     def __init__(self, obj_cls: typing.Type[DBusWrapper], manager):

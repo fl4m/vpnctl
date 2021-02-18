@@ -1,11 +1,10 @@
 from datetime import datetime
 
-from .configs import ConfigManager, Configuration
-from .wrapper import DBusWrapper, OvpnManager
-from .vendor import openvpn3
-
-from .. import Status
 from . import OVPN_BUS
+from .configs import Configuration
+from .vendor import openvpn3
+from .wrapper import BaseManager, DBusWrapper
+from .. import Status
 
 
 class Session(DBusWrapper):
@@ -58,7 +57,7 @@ class Session(DBusWrapper):
         self.wrapped.Disconnect()
 
 
-class SessionManager(OvpnManager[Session]):
+class SessionManager(BaseManager[Session]):
     def __init__(self):
         super().__init__(Session, openvpn3.SessionManager(OVPN_BUS))
 

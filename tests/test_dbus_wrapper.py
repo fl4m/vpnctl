@@ -1,21 +1,15 @@
 import dbus
 
 from vpnctl.ovpn.wrapper import DBusWrapper
+from . import mocks
 
 
 class TestWrapper(DBusWrapper):
     _interface_name = "org.freedesktop.DBus"
     _bus = dbus.SystemBus()
 
-    class MockObject:
-        def __init__(self, path):
-            self._path = path
-
-        def GetPath(self):
-            return self._path
-
     def __init__(self, path):
-        super().__init__(self.MockObject(path))
+        super().__init__(mocks.OvpnObject(path))
 
 
 existing_path = "/org/freedesktop/DBus"

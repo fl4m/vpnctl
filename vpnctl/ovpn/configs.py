@@ -1,6 +1,6 @@
-from .wrapper import DBusWrapper, OvpnManager
-from .vendor import openvpn3
 from . import OVPN_BUS
+from .vendor import openvpn3
+from .wrapper import BaseManager, DBusWrapper
 
 
 class Configuration(DBusWrapper):
@@ -14,7 +14,7 @@ class Configuration(DBusWrapper):
         return self._get_property("name")
 
 
-class ConfigManager(OvpnManager[Configuration]):
+class ConfigManager(BaseManager[Configuration]):
     """Contains all methods to create and retrieve OpenVPN configurations."""
 
     def __init__(self):
